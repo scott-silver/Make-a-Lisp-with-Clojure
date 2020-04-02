@@ -6,4 +6,6 @@
   :dependencies [[org.clojure/clojure "1.10.0"]]
   :main ^:skip-aot make-a-lisp-with-clojure.core
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:step0 {:main make-a-lisp-with-clojure.step0-repl
+                     :uberjar-name "step0_repl.jar"
+                     :aot [make-a-lisp-with-clojure.step0-repl]}})
