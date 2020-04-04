@@ -23,3 +23,12 @@
   (testing "captures groups of characters and numbers"
     (is (= (r/tokenize-string "abc 123 true false nil a1b2c3")
            '("abc" "123" "true" "false" "nil" "a1b2c3")))))
+
+(deftest data-structure-for-token-list-test
+  (testing "returns an empty vector for an empty list"
+    (is (= (r/data-structure-for-token-list '()) [])))
+
+  (testing "returns atoms for atomic types" ;; this description sucks
+    (is (= (r/data-structure-for-token-list '("a")) [[:string "a"]]))
+    (is (= (r/data-structure-for-token-list '("ab")) [[:string "ab"]]))
+    (is (= (r/data-structure-for-token-list '("a" "b")) [[:string "a"] [:string "b"]]))))
