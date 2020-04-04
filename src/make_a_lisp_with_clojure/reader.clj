@@ -58,7 +58,9 @@
          accumulated-result []]
     (let [first-token (first remaining-tokens)]
       (cond
-        ;; TODO: throw an error if you hit a close-parens ")"
+        ;; throw an error if you hit a close-parens ")"
+        (= ")" first-token)
+        (throw (Exception. "unexpected close-parens"))
 
         (empty? remaining-tokens) accumulated-result
 

@@ -66,6 +66,9 @@
            [[:list [[:list [[:string "a"]]] [:string "b"]]] '("c" "d" "(" ")")]))))
 
 (deftest consume-tokens-test
+  (testing "throws an error it encounters a close-paren"
+    (is (thrown-with-msg? Exception #"unexpected close-parens" (r/consume-tokens '(")")))))
+
   (testing "returns an empty vector for an empty list of tokens"
     (is (= (r/consume-tokens '()) [])))
 
