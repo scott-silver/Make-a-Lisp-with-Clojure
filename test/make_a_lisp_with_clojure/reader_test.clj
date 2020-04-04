@@ -24,18 +24,6 @@
     (is (= (r/tokenize-string "abc 123 true false nil a1b2c3")
            '("abc" "123" "true" "false" "nil" "a1b2c3")))))
 
-(deftest data-structure-for-token-list-test
-  (testing "returns an empty vector for an empty list"
-    (is (= (r/data-structure-for-token-list '()) [])))
-
-  (testing "returns atoms for atomic types" ;; this description sucks
-    (is (= (r/data-structure-for-token-list '("a")) [[:string "a"]]))
-    (is (= (r/data-structure-for-token-list '("ab")) [[:string "ab"]]))
-    (is (= (r/data-structure-for-token-list '("a" "b")) [[:string "a"] [:string "b"]]))))
-
-  ;; (testing "returns a :list for an empty list"
-  ;;   (is (= (r/data-structure-for-token-list '("(" ")")) [[:list []]]))))
-
 (deftest consume-list-test
   (testing "throws an error if the list of tokens is missing a close-paren"
     (is (thrown-with-msg? Exception #"missing close-parens" (r/consume-list '()))))
@@ -77,3 +65,37 @@
     (is (= (r/consume-list '("(" "a" ")" "b" ")" "c" "d" "(" ")"))
            [[:list [[:list [[:string "a"]]] [:string "b"]]] '("c" "d" "(" ")")]))))
 
+(deftest consume-tokens-test
+  (testing "returns an empty vector for an empty list of tokens"
+    (is (= (r/consume-tokens '()) [])))
+
+  (testing "consumes atoms"
+    (is (= (r/consume-tokens '("a")) [[:string "a"]]))
+    (is (= (r/consume-tokens '("a" "b")) [[:string "a"] [:string "b"]]))
+    (is (= (r/consume-tokens '("a" "b" "abc")) [[:string "a"] [:string "b"] [:string "abc"]])))
+
+  (testing "consumes lists"
+    (is (= (r/consume-tokens '("(" ")")) [[:list []]]))
+    (is (= (r/consume-tokens '("(" ")" "(" ")")) [[:list []] [:list []]]))
+    (is (= (r/consume-tokens '("(" "a" ")")) [[:list [[:string "a"]]]]))
+    (is (= (r/consume-tokens '("(" "a" "b" "c" ")"))
+           [[:list [[:string "a"] [:string "b"] [:string "c"]]]])))
+
+  (testing "consumes lists within lists"
+    (is (= (r/consume-tokens '("(" "(" ")" ")")) [[:list [[:list []]]]]))
+    (is (= (r/consume-tokens '("(" "(" "a" ")" ")")) [[:list [[:list [[:string "a"]]]]]]))
+    (is (= (r/consume-tokens '("("  "a" "(" "b" ")" ")"))
+           [[:list [[:string "a"] [:list [[:string "b"]]]]]]))
+    (is (= (r/consume-tokens '("("  "a" "(" "b" ")" "c" ")"))
+          [[:list [[:string "a"] [:list [[:string "b"]]] [:string "c"]]]])))
+
+  (testing "correctly handles combinations of lists and atoms"
+    (is (= (r/consume-tokens '("a" "(" "b" "(" "c" ")" "d" ")" "e" "f" "(" ")"))
+           [[:string "a"]
+            [:list [
+                    [:string "b"]
+                    [:list [[:string "c"]]]
+                    [:string "d"]]]
+            [:string "e"]
+            [:string "f"]
+            [:list []]]))))
