@@ -24,6 +24,12 @@
     (is (= (r/tokenize-string "abc 123 true false nil a1b2c3")
            '("abc" "123" "true" "false" "nil" "a1b2c3")))))
 
+(deftest consume-atom-test
+  (testing "returns integer types"
+    (is (= (r/consume-atom "0") [:integer 0]))
+    (is (= (r/consume-atom "123") [:integer 123]))
+    (is (= (r/consume-atom "-50") [:integer -50]))))
+
 (deftest consume-list-test
   (testing "throws an error if the list of tokens is missing a close-paren"
     (is (thrown-with-msg? Exception #"missing close-parens" (r/consume-list '()))))

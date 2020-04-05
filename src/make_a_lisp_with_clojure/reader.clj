@@ -26,8 +26,11 @@
 ;; consume-tokens continues until it runs out of tokens, then returns its
 ;; accumulated result
 
+(def integer-regex #"-?\d*")
+
 (defn consume-atom [atom]
-  [:string atom])
+  (if-let [int-string (re-matches integer-regex atom)]
+    [:integer (read-string int-string)]))
 
 (defn consume-list
   ([tokens]
