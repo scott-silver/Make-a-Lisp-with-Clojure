@@ -28,7 +28,17 @@
   (testing "returns integer types"
     (is (= (r/consume-atom "0") [:integer 0]))
     (is (= (r/consume-atom "123") [:integer 123]))
-    (is (= (r/consume-atom "-50") [:integer -50]))))
+    (is (= (r/consume-atom "-50") [:integer -50])))
+
+  (testing "returns symbols"
+    (is (= (r/consume-atom "+") [:symbol "+"]))
+    (is (= (r/consume-atom "-") [:symbol "-"]))
+    (is (= (r/consume-atom "a") [:symbol "a"]))
+    (is (= (r/consume-atom "abc") [:symbol "abc"]))
+    (is (= (r/consume-atom "abc123") [:symbol "abc123"]))
+    (is (= (r/consume-atom "abc-def") [:symbol "abc-def"]))
+    (is (= (r/consume-atom "-abc") [:symbol "-abc"]))
+    (is (= (r/consume-atom "->>") [:symbol "->>"]))))
 
 (deftest consume-list-test
   (testing "throws an error if the list of tokens is missing a close-paren"

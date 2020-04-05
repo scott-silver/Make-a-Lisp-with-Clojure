@@ -26,11 +26,14 @@
 ;; consume-tokens continues until it runs out of tokens, then returns its
 ;; accumulated result
 
-(def integer-regex #"-?\d*")
+(def integer-regex #"-?\d+") ;; one or more digits, potentially with a leading `-`
+(def symbol-regex #"[^\s]*") ;; any string that contains no whitespace
 
 (defn consume-atom [atom]
   (if-let [int-string (re-matches integer-regex atom)]
-    [:integer (read-string int-string)]))
+    [:integer (read-string int-string)]
+    (if-let [symbol-string (re-matches symbol-regex atom)]
+      [:symbol symbol-string])))
 
 (defn consume-list
   ([tokens]
