@@ -95,8 +95,7 @@
   (testing "correctly handles combinations of lists and atoms"
     (is (= (r/consume-tokens '("a" "(" "b" "(" "c" ")" "d" ")" "e" "f" "(" ")"))
            [[:string "a"]
-            [:list [
-                    [:string "b"]
+            [:list [[:string "b"]
                     [:list [[:string "c"]]]
                     [:string "d"]]]
             [:string "e"]
