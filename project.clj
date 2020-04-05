@@ -8,4 +8,7 @@
   :target-path "target/%s"
   :profiles {:step0 {:main make-a-lisp-with-clojure.step0-repl
                      :uberjar-name "step0_repl.jar"
-                     :aot [make-a-lisp-with-clojure.step0-repl]}})
+                     :aot [make-a-lisp-with-clojure.step0-repl]}
+             :step1 {:main make-a-lisp-with-clojure.step1-read-print
+                     :uberjar-name "step1_read_print.jar"
+                     :aot [make-a-lisp-with-clojure.step1-read-print]}})
