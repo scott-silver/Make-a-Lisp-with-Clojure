@@ -33,8 +33,8 @@
     (is (= (s1/read-eval-print "  ( +   1   (+   2 3   )   )") "(+ 1 (+ 2 3))"))
     (is (= (s1/read-eval-print "(* 1 2)") "(* 1 2)"))
     (is (= (s1/read-eval-print "(** 1 2)") "(** 1 2)"))
-    (is (= (s1/read-eval-print "(* -3 6)") "(* -3 6)")))
-    ;; (is (= (s1/read-eval-print "(()())") "(()())")))
+    (is (= (s1/read-eval-print "(* -3 6)") "(* -3 6)"))
+    (is (= (s1/read-eval-print "(()())") "(() ())")))
 
   (testing "commas as whitespace"
     (is (= (s1/read-eval-print "(1 2, 3,,,,),,") "(1 2 3)"))))
