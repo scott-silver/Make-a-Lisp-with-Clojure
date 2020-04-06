@@ -12,14 +12,14 @@
   (testing "it handles nested lists"
     (is (= "((()))" (p/print-data-structures [[:list [[:list [[:list []]]]]]]))))
 
-  (testing "it returns the contents of strings"
-    (is (= "abc" (p/print-data-structures [[:string "abc"]])))
-    (is (= "a b c" (p/print-data-structures [[:string "a"] [:string "b"] [:string "c"]]))))
+  (testing "it returns the values of symbols"
+    (is (= "abc" (p/print-data-structures [[:symbol "abc"]])))
+    (is (= "a b c" (p/print-data-structures [[:symbol "a"] [:symbol "b"] [:symbol "c"]]))))
 
   (testing "it spaces out the contents of lists"
     (is (= "(a b c)"
            (p/print-data-structures
-            [[:list [[:string "a"] [:string "b"] [:string "c"]]]])))
+            [[:list [[:symbol "a"] [:symbol "b"] [:symbol "c"]]]])))
     (is (= "(a (b) c)"
           (p/print-data-structures
-            [[:list [[:string "a"] [:list [[:string "b"]]] [:string "c"]]]])))))
+            [[:list [[:symbol "a"] [:list [[:symbol "b"]]] [:symbol "c"]]]])))))

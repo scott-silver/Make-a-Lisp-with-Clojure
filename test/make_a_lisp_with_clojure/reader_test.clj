@@ -50,36 +50,36 @@
 
   (testing "returns items before close-paren as contents of list"
     (is (= (r/consume-list '("a" ")"))
-           [[:list [[:string "a"]]] '()])))
+           [[:list [[:symbol "a"]]] '()])))
 
   (testing "returns items after close-parens as the second return value"
     (is (= (r/consume-list '(")" "a" "b" "c"))
-          [[:list []] '("a" "b" "c")]))
+           [[:list []] '("a" "b" "c")]))
 
     (is (= (r/consume-list '("a" ")" "b" "c"))
-          [[:list [[:string "a"]]] '("b" "c")])))
+           [[:list [[:symbol "a"]]] '("b" "c")])))
 
   (testing "returns nested lists"
     (is (= (r/consume-list '("(" ")" ")"))
-           [[:list [[:list []]]] '()]))
+          [[:list [[:list []]]] '()]))
 
     (is (= (r/consume-list '("(" "(" ")" ")" ")"))
            [[:list [[:list [[:list []]]]]] ()]))
 
     (is (= (r/consume-list '("(" "a" ")" ")"))
-           [[:list [[:list [[:string "a"]]]]] '()]))
+           [[:list [[:list [[:symbol "a"]]]]] '()]))
 
     (is (= (r/consume-list '("(" "a" ")" "b" ")"))
-           [[:list [[:list [[:string "a"]]] [:string "b"]]] '()]))
+           [[:list [[:list [[:symbol "a"]]] [:symbol "b"]]] '()]))
 
     (is (= (r/consume-list '("(" "a" ")" "b" ")" "c"))
-           [[:list [[:list [[:string "a"]]] [:string "b"]]] '("c")]))
+           [[:list [[:list [[:symbol "a"]]] [:symbol "b"]]] '("c")]))
 
     (is (= (r/consume-list '("(" "a" ")" "b" ")" "c" "d"))
-           [[:list [[:list [[:string "a"]]] [:string "b"]]] '("c" "d")]))
+           [[:list [[:list [[:symbol "a"]]] [:symbol "b"]]] '("c" "d")]))
 
     (is (= (r/consume-list '("(" "a" ")" "b" ")" "c" "d" "(" ")"))
-           [[:list [[:list [[:string "a"]]] [:string "b"]]] '("c" "d" "(" ")")]))))
+           [[:list [[:list [[:symbol "a"]]] [:symbol "b"]]] '("c" "d" "(" ")")]))))
 
 (deftest consume-tokens-test
   (testing "throws an error it encounters a close-paren"
@@ -89,31 +89,31 @@
     (is (= (r/consume-tokens '()) [])))
 
   (testing "consumes atoms"
-    (is (= (r/consume-tokens '("a")) [[:string "a"]]))
-    (is (= (r/consume-tokens '("a" "b")) [[:string "a"] [:string "b"]]))
-    (is (= (r/consume-tokens '("a" "b" "abc")) [[:string "a"] [:string "b"] [:string "abc"]])))
+    (is (= (r/consume-tokens '("a")) [[:symbol "a"]]))
+    (is (= (r/consume-tokens '("a" "b")) [[:symbol "a"] [:symbol "b"]]))
+    (is (= (r/consume-tokens '("a" "b" "abc")) [[:symbol "a"] [:symbol "b"] [:symbol "abc"]])))
 
   (testing "consumes lists"
     (is (= (r/consume-tokens '("(" ")")) [[:list []]]))
     (is (= (r/consume-tokens '("(" ")" "(" ")")) [[:list []] [:list []]]))
-    (is (= (r/consume-tokens '("(" "a" ")")) [[:list [[:string "a"]]]]))
+    (is (= (r/consume-tokens '("(" "a" ")")) [[:list [[:symbol "a"]]]]))
     (is (= (r/consume-tokens '("(" "a" "b" "c" ")"))
-           [[:list [[:string "a"] [:string "b"] [:string "c"]]]])))
+           [[:list [[:symbol "a"] [:symbol "b"] [:symbol "c"]]]])))
 
   (testing "consumes lists within lists"
     (is (= (r/consume-tokens '("(" "(" ")" ")")) [[:list [[:list []]]]]))
-    (is (= (r/consume-tokens '("(" "(" "a" ")" ")")) [[:list [[:list [[:string "a"]]]]]]))
+    (is (= (r/consume-tokens '("(" "(" "a" ")" ")")) [[:list [[:list [[:symbol "a"]]]]]]))
     (is (= (r/consume-tokens '("("  "a" "(" "b" ")" ")"))
-           [[:list [[:string "a"] [:list [[:string "b"]]]]]]))
+           [[:list [[:symbol "a"] [:list [[:symbol "b"]]]]]]))
     (is (= (r/consume-tokens '("("  "a" "(" "b" ")" "c" ")"))
-          [[:list [[:string "a"] [:list [[:string "b"]]] [:string "c"]]]])))
+          [[:list [[:symbol "a"] [:list [[:symbol "b"]]] [:symbol "c"]]]])))
 
   (testing "correctly handles combinations of lists and atoms"
     (is (= (r/consume-tokens '("a" "(" "b" "(" "c" ")" "d" ")" "e" "f" "(" ")"))
-           [[:string "a"]
-            [:list [[:string "b"]
-                    [:list [[:string "c"]]]
-                    [:string "d"]]]
-            [:string "e"]
-            [:string "f"]
+           [[:symbol "a"]
+            [:list [[:symbol "b"]
+                    [:list [[:symbol "c"]]]
+                    [:symbol "d"]]]
+            [:symbol "e"]
+            [:symbol "f"]
             [:list []]]))))

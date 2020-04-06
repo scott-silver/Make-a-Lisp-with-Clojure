@@ -3,7 +3,11 @@
 
 (defmulti print-data-structure first)
 
-(defmethod print-data-structure :string
+(defmethod print-data-structure :integer
+  [integer-structure]
+  (second integer-structure))
+
+(defmethod print-data-structure :symbol
   [string-structure]
   (second string-structure))
 
