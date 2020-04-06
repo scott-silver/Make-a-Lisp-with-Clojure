@@ -85,35 +85,34 @@
   (testing "throws an error it encounters a close-paren"
     (is (thrown-with-msg? Exception #"unexpected close-parens" (r/consume-tokens '(")")))))
 
-  (testing "returns an empty vector for an empty list of tokens"
-    (is (= (r/consume-tokens '()) [])))
+  (testing "returns nil for an empty list of tokens"
+    (is (= (r/consume-tokens '()) nil)))
 
   (testing "consumes atoms"
-    (is (= (r/consume-tokens '("a")) [[:symbol "a"]]))
-    (is (= (r/consume-tokens '("a" "b")) [[:symbol "a"] [:symbol "b"]]))
-    (is (= (r/consume-tokens '("a" "b" "abc")) [[:symbol "a"] [:symbol "b"] [:symbol "abc"]])))
+    (is (= (r/consume-tokens '("a")) [:symbol "a"]))
+    (is (= (r/consume-tokens '("ab")) [:symbol "ab"]))
+    (is (= (r/consume-tokens '("+")) [:symbol "+"]))
+    (is (= (r/consume-tokens '("36")) [:integer 36]))
+    (is (= (r/consume-tokens '("-584")) [:integer -584])))
 
   (testing "consumes lists"
-    (is (= (r/consume-tokens '("(" ")")) [[:list []]]))
-    (is (= (r/consume-tokens '("(" ")" "(" ")")) [[:list []] [:list []]]))
-    (is (= (r/consume-tokens '("(" "a" ")")) [[:list [[:symbol "a"]]]]))
+    (is (= (r/consume-tokens '("(" ")")) [:list []]))
+    (is (= (r/consume-tokens '("(" "a" ")")) [:list [[:symbol "a"]]]))
     (is (= (r/consume-tokens '("(" "a" "b" "c" ")"))
-           [[:list [[:symbol "a"] [:symbol "b"] [:symbol "c"]]]])))
+           [:list [[:symbol "a"] [:symbol "b"] [:symbol "c"]]])))
 
   (testing "consumes lists within lists"
-    (is (= (r/consume-tokens '("(" "(" ")" ")")) [[:list [[:list []]]]]))
-    (is (= (r/consume-tokens '("(" "(" "a" ")" ")")) [[:list [[:list [[:symbol "a"]]]]]]))
+    (is (= (r/consume-tokens '("(" "(" ")" ")")) [:list [[:list []]]]))
+    (is (= (r/consume-tokens '("(" "(" "a" ")" ")")) [:list [[:list [[:symbol "a"]]]]]))
     (is (= (r/consume-tokens '("("  "a" "(" "b" ")" ")"))
-           [[:list [[:symbol "a"] [:list [[:symbol "b"]]]]]]))
+           [:list [[:symbol "a"] [:list [[:symbol "b"]]]]]))
     (is (= (r/consume-tokens '("("  "a" "(" "b" ")" "c" ")"))
-          [[:list [[:symbol "a"] [:list [[:symbol "b"]]] [:symbol "c"]]]])))
+           [:list [[:symbol "a"] [:list [[:symbol "b"]]] [:symbol "c"]]])))
 
   (testing "correctly handles combinations of lists and atoms"
-    (is (= (r/consume-tokens '("a" "(" "b" "(" "c" ")" "d" ")" "e" "f" "(" ")"))
-           [[:symbol "a"]
-            [:list [[:symbol "b"]
-                    [:list [[:symbol "c"]]]
-                    [:symbol "d"]]]
-            [:symbol "e"]
-            [:symbol "f"]
-            [:list []]]))))
+    (is (= (r/consume-tokens '("(" "a" "(" "b" ")" "c" "d" "(" ")" ")"))
+           [:list [[:symbol "a"]
+                   [:list [[:symbol "b"]]]
+                   [:symbol "c"]
+                   [:symbol "d"]
+                   [:list []]]]))))

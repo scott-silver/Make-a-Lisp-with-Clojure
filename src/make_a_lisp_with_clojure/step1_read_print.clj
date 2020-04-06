@@ -9,8 +9,8 @@
 (defn EVAL [a]
   a)
 
-(defn PRINT [data-structures]
-  (printer/print-data-structures data-structures))
+(defn PRINT [ast]
+  (printer/print-ast ast))
 
 (defn read-eval-print [a]
   (-> a

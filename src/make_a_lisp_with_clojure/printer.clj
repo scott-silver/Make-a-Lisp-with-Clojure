@@ -1,29 +1,24 @@
 (ns make-a-lisp-with-clojure.printer
   (:require [clojure.string :as str]))
 
-(defmulti print-data-structure first)
+(defmulti print-ast-item first)
 
-(defmethod print-data-structure :integer
+(defmethod print-ast-item :integer
   [integer-structure]
-  (second integer-structure))
+  (str (second integer-structure)))
 
-(defmethod print-data-structure :symbol
+(defmethod print-ast-item :symbol
   [string-structure]
   (second string-structure))
 
-(defmethod print-data-structure :list
+(defmethod print-ast-item :list
   [list-structure]
   (let [list-contents (second list-structure)
-        list-contents-strings (map print-data-structure list-contents)]
+        list-contents-strings (map print-ast-item list-contents)]
     (str "(" (str/join " " list-contents-strings) ")")))
 
-(defn print-data-structures
-  [data-structure-list]
-  (loop [list data-structure-list
-         accumulated-string ""]
-    (let [first-data-structure (first list)]
-      (cond
-        (empty? list) (clojure.string/trim accumulated-string)
-        :else
-        (let [next-string (print-data-structure first-data-structure)]
-          (recur (rest list) (str accumulated-string " " next-string)))))))
+(defn print-ast
+  [ast]
+  (cond
+    (nil? ast) ""
+    :else (print-ast-item ast)))

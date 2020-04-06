@@ -60,23 +60,22 @@
       (recur (rest tokens) (conj accumulated-list (consume-atom first-token)))))))
 
 (defn consume-tokens [tokens]
-  (loop [remaining-tokens tokens
-         accumulated-result []]
-    (let [first-token (first remaining-tokens)]
-      (cond
-        ;; throw an error if you hit a close-parens ")"
-        (= ")" first-token)
-        (throw (Exception. "unexpected close-parens"))
+  (let [first-token (first tokens)]
+    (cond
+      (empty? tokens) nil
 
-        (empty? remaining-tokens) accumulated-result
+      ;; throw an error if you hit a close-parens ")"
+      (= ")" first-token)
+      (throw (Exception. "unexpected close-parens"))
 
-        ;; consume lists
-        (= "(" first-token)
-        (let [[list tokens-after-list] (consume-list (rest remaining-tokens))]
-          (recur tokens-after-list (conj accumulated-result list)))
-        ;;
-        (not= "(" first-token)
-        (recur (rest remaining-tokens) (conj accumulated-result (consume-atom first-token)))))))
+      ;; consume lists
+      (= "(" first-token)
+      (let [[list tokens-after-list] (consume-list (rest tokens))]
+        list)
+
+      ;; consume-atoms
+      (not= "(" first-token)
+      (consume-atom first-token))))
 
 (def token-regex #"[\s,]*(~@|[\[\]{}()'`~^@]|\"(?:[\\].|[^\\\"])*\"?|;.*|[^\s\[\]{}()'\"`@,;]+)")
 
