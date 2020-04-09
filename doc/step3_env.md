@@ -94,31 +94,6 @@ You mal implementation is still basically just a numeric calculator
 with save/restore capability. But you have set the foundation for step
 4 where it will begin to feel like a real programming language.
 
-
-An aside on mutation and typing:
-
-The "!" suffix on symbols is used to indicate that this symbol refers
-to a function that mutates something else. In this case, the `def!`
-symbol indicates a special form that will mutate the current
-environment. Many (maybe even most) of runtime problems that are
-encountered in software engineering are a result of mutation. By
-clearly marking code where mutation may occur, you can more easily
-track down the likely cause of runtime problems when they do occur.
-
-Another cause of runtime errors is type errors, where a value of one
-type is unexpectedly treated by the program as a different and
-incompatible type. Statically typed languages try to make the
-programmer solve all type problems before the program is allowed to
-run. Most Lisp variants tend to be dynamically typed (types of values
-are checked when they are actually used at runtime).
-
-As an aside-aside: The great debate between static and dynamic typing
-can be understood by following the money. Advocates of strict static
-typing use words like "correctness" and "safety" and thus get
-government and academic funding. Advocates of dynamic typing use words
-like "agile" and "time-to-market" and thus get venture capital and
-commercial funding.
-
 ```
 --- step3_env -----------------------------------
 import types, reader, printer, env
