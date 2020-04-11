@@ -1,5 +1,5 @@
-(ns make-a-lisp-with-clojure.reader)
-
+(ns make-a-lisp-with-clojure.reader
+  (:require [com.walmartlabs.cond-let :refer [cond-let]]))
 ;; consume-tokens, consume-list and consume-atom work in tandem to turn a list
 ;; of tokens into a data structure that represents its meaning.
 ;;
@@ -29,11 +29,19 @@
 (def integer-regex #"-?\d+") ;; one or more digits, potentially with a leading `-`
 (def symbol-regex #"[^\s]*") ;; any string that contains no whitespace
 
+(def not-nil? some?)
+
 (defn consume-atom [atom]
-  (if-let [int-string (re-matches integer-regex atom)]
-    [:integer (read-string int-string)]
-    (if-let [symbol-string (re-matches symbol-regex atom)]
-      [:symbol symbol-string])))
+  (cond-let
+   (= "def" atom) [:def]
+
+   :let [int-string (re-matches integer-regex atom)]
+   (not-nil? int-string)
+   [:integer (read-string int-string)]
+
+   :let [symbol-string (re-matches symbol-regex atom)]
+   (not-nil? symbol-string)
+   [:symbol symbol-string]))
 
 (defn consume-list
   ([tokens]

@@ -22,7 +22,11 @@
 
   (testing "captures groups of characters and numbers"
     (is (= (r/tokenize-string "abc 123 true false nil a1b2c3")
-           '("abc" "123" "true" "false" "nil" "a1b2c3")))))
+           '("abc" "123" "true" "false" "nil" "a1b2c3"))))
+
+  (testing "captures defs"
+    (is (= (r/tokenize-string "(def a 6)")
+          '("(" "def" "a" "6" ")")))))
 
 (deftest consume-atom-test
   (testing "returns integer types"
@@ -38,7 +42,10 @@
     (is (= (r/consume-atom "abc123") [:symbol "abc123"]))
     (is (= (r/consume-atom "abc-def") [:symbol "abc-def"]))
     (is (= (r/consume-atom "-abc") [:symbol "-abc"]))
-    (is (= (r/consume-atom "->>") [:symbol "->>"]))))
+    (is (= (r/consume-atom "->>") [:symbol "->>"])))
+
+  (testing "returns defs"
+    (is (= (r/consume-atom "def") [:def]))))
 
 (deftest consume-list-test
   (testing "throws an error if the list of tokens is missing a close-paren"
