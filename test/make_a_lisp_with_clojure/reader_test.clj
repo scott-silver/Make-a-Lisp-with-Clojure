@@ -126,4 +126,8 @@
                    [:list [[:symbol "b"]]]
                    [:symbol "c"]
                    [:symbol "d"]
-                   [:list []]]]))))
+                   [:list []]]])))
+
+  (testing "consumes defs"
+    (is (= (r/consume-tokens '("(" "def" "a" "1" ")"))
+           [:list [[:def] [:symbol "a"] [:integer 1]]]))))
