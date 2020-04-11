@@ -86,7 +86,11 @@
            [[:list [[:list [[:symbol "a"]]] [:symbol "b"]]] '("c" "d")]))
 
     (is (= (r/consume-list '("(" "a" ")" "b" ")" "c" "d" "(" ")"))
-           [[:list [[:list [[:symbol "a"]]] [:symbol "b"]]] '("c" "d" "(" ")")]))))
+           [[:list [[:list [[:symbol "a"]]] [:symbol "b"]]] '("c" "d" "(" ")")])))
+
+  (testing "returns defs"
+    (is (= (r/consume-list '("def" "a" "1" ")"))
+           [[:list [[:def] [:symbol "a"] [:integer 1]]] '()]))))
 
 (deftest consume-tokens-test
   (testing "throws an error it encounters a close-paren"
