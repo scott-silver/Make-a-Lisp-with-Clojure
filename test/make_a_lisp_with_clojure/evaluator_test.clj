@@ -2,7 +2,6 @@
   (:require [clojure.test :refer :all]
             [make-a-lisp-with-clojure.evaluator :as e]))
 
-
 (deftest lookup-symbol-test
   (testing "returns value from env"
     (is (= (e/lookup-symbol [:symbol "a"] {"a" 1}) 1))
@@ -26,27 +25,32 @@
     (is (= (e/evaluate-ast-item [:integer -123] {}) -123))))
 
 (deftest evaluate-ast-test
-  (testing "returns nil for a nil ast"
-    (is (= (e/evaluate-ast nil {}) nil)))
+  (testing "returns nil (and an unchanged env) for a nil ast"
+    (is (= (e/evaluate-ast nil {})
+           [nil {}])))
 
-  (testing "evaluates symbols"
-    (is (= (e/evaluate-ast [:symbol "plus"] {"plus" +}) +))
-    (is (= (e/evaluate-ast [:symbol "a"] {"a" 10}) 10)))
+  (testing "returns symbol values (and an unchanged env)"
+    (is (= (e/evaluate-ast [:symbol "plus"] {"plus" +})
+           [+ {"plus" +}]))
+    (is (= (e/evaluate-ast [:symbol "a"] {"a" 10})
+           [10 {"a" 10}])))
 
-  (testing "evaluates integers"
-    (is (= (e/evaluate-ast [:integer 10] {}) 10))
-    (is (= (e/evaluate-ast [:integer -123] {}) -123)))
+  (testing "returns integers (and an unchanged env)"
+    (is (= (e/evaluate-ast [:integer 10] {})
+           [10 {}]))
+    (is (= (e/evaluate-ast [:integer -123] {})
+           [-123 {}])))
 
-  (testing "applies first item in list to the remainder of the list"
+  (testing "applies first item in list to the remainder of the list (and does not change env)"
     (is (= (e/evaluate-ast
             [:list [[:symbol "plus"] [:integer 1] [:integer 2]]]
             {"plus" +})
-           3))
+           [3 {"plus" +}]))
 
     (is (= (e/evaluate-ast
             [:list [[:symbol "plus"] [:integer 1] [:integer 2] [:integer 3]]]
             {"plus" +})
-          6))
+           [6 {"plus" +}]))
 
     (is (= (e/evaluate-ast
             [:list [[:symbol "plus"]
@@ -54,9 +58,9 @@
                     [:list [[:symbol "multiply"]
                             [:integer 2]
                             [:integer 3]]]]]
-            {"plus" +
+            {"plus"     +
              "multiply" *})
-          11))
+           [11 {"plus" + "multiply" *}]))
 
     (is (= (e/evaluate-ast
             [:list [[:symbol "subtract"]
@@ -67,6 +71,8 @@
                                     [:integer 3]]]]]
                     [:integer 3]]]
             {"subtract" -
-             "add" +
+             "add"      +
              "multiply" *})
-          8))))
+           [8 {"subtract" -
+               "add"      +
+               "multiply" *}]))))
