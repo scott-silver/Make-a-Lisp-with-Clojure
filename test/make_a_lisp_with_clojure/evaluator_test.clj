@@ -75,4 +75,22 @@
              "multiply" *})
            [8 {"subtract" -
                "add"      +
-               "multiply" *}]))))
+               "multiply" *}])))
+
+  (testing "evaluates defs and adds them to the env"
+    (is (= [1 {"a" 1}]
+           (e/evaluate-ast
+                [:list [[:def] [:symbol "a"] [:integer 1]]]
+                {})))
+
+    (is (= [3 {"plus" +
+               "a" 1
+               "b" 3}]
+          (e/evaluate-ast
+           [:list [[:def]
+                   [:symbol "b"]
+                   [:list [[:symbol "plus"]
+                           [:symbol "a"]
+                           [:integer 2]]]]]
+           {"plus" +
+            "a" 1})))))
