@@ -13,7 +13,8 @@
    "*" *})
 
 (defn EVAL [ast env]
-  (evaluator/evaluate-ast ast env))
+  (let [[result _] (evaluator/evaluate-ast ast env)]
+    result))
 
 (defn PRINT [ast]
   (str ast))
