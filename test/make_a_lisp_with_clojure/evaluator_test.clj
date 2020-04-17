@@ -93,4 +93,42 @@
                            [:symbol "a"]
                            [:integer 2]]]]]
            {"plus" +
-            "a" 1})))))
+            "a" 1}))))
+
+  (testing "evaluates let definitions but does not add them to the env"
+    (is (= [1 {}]
+           (e/evaluate-ast
+            [:list [[:let]
+                    [:list [[:symbol "a"]
+                            [:integer 1]]]
+                    [:symbol "a"]]]
+            {})))
+
+    (is (= [3 {"plus" +}]
+          (e/evaluate-ast
+            [:list [[:let]
+                    [:list [[:symbol "a"]
+                            [:integer 1]
+                            [:symbol "b"]
+                            [:integer 2]]]
+                    [:list [[:symbol "plus"]
+                            [:symbol "a"]
+                            [:symbol "b"]]]]]
+            {"plus" +})))
+
+    (is (= [6 {"plus" +}]
+          (e/evaluate-ast
+            [:list [[:let]
+                    [:list [[:symbol "a"]
+                            [:integer 1]
+                            [:symbol "b"]
+                            [:integer 2]
+                            [:symbol "c"]
+                            [:list [[:symbol "plus"]
+                                    [:symbol "a"]
+                                    [:symbol "b"]]]]]
+                    [:list [[:symbol "plus"]
+                            [:symbol "a"]
+                            [:symbol "b"]
+                            [:symbol "c"]]]]]
+            {"plus" +})))))
