@@ -35,6 +35,8 @@
   (cond-let
    (= "def" atom) [:def]
 
+   (= "let" atom) [:let]
+
    :let [int-string (re-matches integer-regex atom)]
    (not-nil? int-string)
    [:integer (read-string int-string)]

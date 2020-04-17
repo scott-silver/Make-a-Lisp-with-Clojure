@@ -26,7 +26,11 @@
 
   (testing "captures defs"
     (is (= (r/tokenize-string "(def a 6)")
-          '("(" "def" "a" "6" ")")))))
+          '("(" "def" "a" "6" ")"))))
+
+  (testing "captures lets"
+    (is (= (r/tokenize-string "(let (c 6) c)")
+          '("(" "let" "(" "c" "6" ")" "c" ")")))))
 
 (deftest consume-atom-test
   (testing "returns integer types"
@@ -45,7 +49,10 @@
     (is (= (r/consume-atom "->>") [:symbol "->>"])))
 
   (testing "returns defs"
-    (is (= (r/consume-atom "def") [:def]))))
+    (is (= (r/consume-atom "def") [:def])))
+
+  (testing "returns lets"
+    (is (= (r/consume-atom "let") [:let]))))
 
 (deftest consume-list-test
   (testing "throws an error if the list of tokens is missing a close-paren"
@@ -90,7 +97,15 @@
 
   (testing "returns defs"
     (is (= (r/consume-list '("def" "a" "1" ")"))
-           [[:list [[:def] [:symbol "a"] [:integer 1]]] '()]))))
+           [[:list [[:def] [:symbol "a"] [:integer 1]]] '()])))
+
+  (testing "returns lets"
+    (is (= (r/consume-list '("let" "(" "a" "1" ")" "a" ")"))
+           [[:list [[:let]
+                    [:list [[:symbol "a"]
+                            [:integer 1]]]
+                    [:symbol "a"]]]
+            '()]))))
 
 (deftest consume-tokens-test
   (testing "throws an error it encounters a close-paren"
@@ -130,4 +145,11 @@
 
   (testing "consumes defs"
     (is (= (r/consume-tokens '("(" "def" "a" "1" ")"))
-           [:list [[:def] [:symbol "a"] [:integer 1]]]))))
+           [:list [[:def] [:symbol "a"] [:integer 1]]])))
+
+  (testing "consumes lets"
+    (is (= (r/consume-tokens '("(" "let" "(" "a" "1" ")" "a" ")"))
+           [:list [[:let]
+                   [:list [[:symbol "a"]
+                           [:integer 1]]]
+                   [:symbol "a"]]]))))
