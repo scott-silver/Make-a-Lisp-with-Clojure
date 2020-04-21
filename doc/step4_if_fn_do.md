@@ -13,8 +13,79 @@ In some Lisps, this special form is named "lambda".
 
 Compare the pseudocode for step 3 and step 4 to get a basic idea of
 the changes that will be made during this step:
+
 ```
-diff -urp ../process/step3_env.txt ../process/step4_if_fn_do.txt
+--- step4_if_fn_do ------------------------------
+import types, reader, printer, env, core
+
+READ(str): return reader.read_str(str)
+
+eval_ast(ast,env):
+  switch type(ast):
+    symbol:      return env.get(ast)
+    list,vector: return ast.map((x) -> EVAL(x,env))
+    hash:        return ast.map((k,v) -> list(k, EVAL(v,env)))
+    _default_:   return ast
+
+EVAL(ast,env):
+    if not list?(ast): return eval_ast(ast, env)
+    if empty?(ast): return ast
+    switch ast[0]:
+      'def!:        return env.set(ast[1], EVAL(ast[2], env))
+      'let*:        let_env = ...; return EVAL(ast[2], let_env)
+      'do:          return eval_ast(rest(ast), env)[-1]
+      'if:          return EVAL(EVAL(ast[1], env) ? ast[2] : ast[3], env)
+      'fn*:         return (...a) -> EVAL(ast[2], new Env(env, ast[1], a))
+      _default_:    f, args = eval_ast(ast, env)
+                    return apply(f, args)
+
+PRINT(exp): return printer.pr_str(exp)
+
+repl_env = new Env()
+rep(str): return PRINT(EVAL(READ(str),repl_env))
+
+;; core.EXT: defined using Racket
+core.ns.map((k,v) -> (repl_env.set(k, v)))
+
+;; core.mal: defined using the language itself
+rep("(def! not (fn* (a) (if a false true)))")
+
+main loop:
+  try:      println(rep(readline("user> ")))
+  catch e:  println("Error: ", e)
+
+--- env module ----------------------------------
+class Env (outer=null,binds=[],exprs=[])
+    data = hash_map()
+    foreach b, i in binds:
+      if binds[i] == '&: data[binds[i+1]] = exprs.drop(i); break
+      else: data[binds[i]] = exprs[i]
+  set(k,v): return data.set(k,v)
+  find(k): return data.has(k) ? this : (if outer ? find(outer) : null)
+  get(k): return data.find(k).get(k) OR raise "'" + k + "' not found"
+
+--- core module ---------------------------------
+ns = {'=:        equal?,
+
+      'pr-str:   (a) -> a.map(|s| pr_str(e,true)).join(" ")),
+      'str:      (a) -> a.map(|s| pr_str(e,false)).join("")),
+      'prn:      (a) -> println(a.map(|s| pr_str(e,true)).join(" ")),
+      'println:  (a) -> println(a.map(|s| pr_str(e,false)).join(" ")),
+
+      '<:        lt,
+      '<=:       lte,
+      '>:        gt,
+      '>=:       gte,
+      '+:        add,
+      '-:        sub,
+      '*:        mult,
+      '/:        div,
+
+      'list:     list,
+      'list?:    list?,
+
+      'empty?:   empty?,
+      'count:    count}
 ```
 
 * Copy `step3_env.qx` to `step4_if_fn_do.qx`.
@@ -139,76 +210,3 @@ from a neat toy to a full featured language.
     to false, joins the results with " ", prints the string to the
     screen and then returns `nil`.
 
-```
---- step4_if_fn_do ------------------------------
-import types, reader, printer, env, core
-
-READ(str): return reader.read_str(str)
-
-eval_ast(ast,env):
-  switch type(ast):
-    symbol:      return env.get(ast)
-    list,vector: return ast.map((x) -> EVAL(x,env))
-    hash:        return ast.map((k,v) -> list(k, EVAL(v,env)))
-    _default_:   return ast
-
-EVAL(ast,env):
-    if not list?(ast): return eval_ast(ast, env)
-    if empty?(ast): return ast
-    switch ast[0]:
-      'def!:        return env.set(ast[1], EVAL(ast[2], env))
-      'let*:        let_env = ...; return EVAL(ast[2], let_env)
-      'do:          return eval_ast(rest(ast), env)[-1]
-      'if:          return EVAL(EVAL(ast[1], env) ? ast[2] : ast[3], env)
-      'fn*:         return (...a) -> EVAL(ast[2], new Env(env, ast[1], a))
-      _default_:    f, args = eval_ast(ast, env)
-                    return apply(f, args)
-
-PRINT(exp): return printer.pr_str(exp)
-
-repl_env = new Env()
-rep(str): return PRINT(EVAL(READ(str),repl_env))
-
-;; core.EXT: defined using Racket
-core.ns.map((k,v) -> (repl_env.set(k, v)))
-
-;; core.mal: defined using the language itself
-rep("(def! not (fn* (a) (if a false true)))")
-
-main loop:
-  try:      println(rep(readline("user> ")))
-  catch e:  println("Error: ", e)
-
---- env module ----------------------------------
-class Env (outer=null,binds=[],exprs=[])
-    data = hash_map()
-    foreach b, i in binds:
-      if binds[i] == '&: data[binds[i+1]] = exprs.drop(i); break
-      else: data[binds[i]] = exprs[i]
-  set(k,v): return data.set(k,v)
-  find(k): return data.has(k) ? this : (if outer ? find(outer) : null)
-  get(k): return data.find(k).get(k) OR raise "'" + k + "' not found"
-
---- core module ---------------------------------
-ns = {'=:        equal?,
-
-      'pr-str:   (a) -> a.map(|s| pr_str(e,true)).join(" ")),
-      'str:      (a) -> a.map(|s| pr_str(e,false)).join("")),
-      'prn:      (a) -> println(a.map(|s| pr_str(e,true)).join(" ")),
-      'println:  (a) -> println(a.map(|s| pr_str(e,false)).join(" ")),
-
-      '<:        lt,
-      '<=:       lte,
-      '>:        gt,
-      '>=:       gte,
-      '+:        add,
-      '-:        sub,
-      '*:        mult,
-      '/:        div,
-
-      'list:     list,
-      'list?:    list?,
-
-      'empty?:   empty?,
-      'count:    count}
-```
