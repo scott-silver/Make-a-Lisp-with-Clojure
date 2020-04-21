@@ -4,11 +4,14 @@
   (:gen-class))
 
 (def base-environment
-  {"+" +
-   "-" -
-   "/" /
-   "*" *
-   "list" list})
+  {"+"      +
+   "-"      -
+   "/"      /
+   "*"      *
+   "list"   list
+   "list?"  list?
+   "empty?" empty?
+   "count"  count})
 
 (def repl-environment (atom base-environment))
 

@@ -4,23 +4,20 @@
 
 (deftest step4-test
   (testing "list functions"
-    (is (= "()" (s4/read-eval-print "(list)")))))
+    ;; list
+    (is (= "()" (s4/read-eval-print "(list)")))
+    ;; list?
+    (is (= "true" (s4/read-eval-print "(list? (list))")))
+    ;; empty?
+    (is (= "true" (s4/read-eval-print "(empty? (list))")))
+    (is (= "false" (s4/read-eval-print "(empty? (list 1))")))
+    ;; populating lists
+    (is (= "(1 2 3)" (s4/read-eval-print "(list 1 2 3)")))
+    ;; count
+    (is (= "3" (s4/read-eval-print "(count (list 1 2 3))")))
+    (is (= "0" (s4/read-eval-print "(count (list))")))))
+    ;; (is (= "0" (s4/read-eval-print "(count nil)")))))
 
-;; ;; Testing list functions
-;; (list)
-;; ;=>()
-;; (list? (list))
-;; ;=>true
-;; (empty? (list))
-;; ;=>true
-;; (empty? (list 1))
-;; ;=>false
-;; (list 1 2 3)
-;; ;=>(1 2 3)
-;; (count (list 1 2 3))
-;; ;=>3
-;; (count (list))
-;; ;=>0
 ;; (count nil)
 ;; ;=>0
 ;; (if (> (count (list 1 2 3)) 3) 89 78)
@@ -50,8 +47,8 @@
 ;; ;=>7
 ;; (= (list) nil)
 ;; ;=>false
-;; 
-;; 
+;;
+;;
 ;; ;; Testing 1-way if form
 ;; (if false (+ 1 7))
 ;; ;=>nil
@@ -451,11 +448,11 @@
 ;; 
 ;; (str [1 2 "abc" "\""] "def")
 ;; ;=>"[1 2 abc \"]def"
-;; 
+;;
 ;; (str [])
 ;; ;=>"[]"
-;; 
-;; 
+;;
+;;
 ;; ;; Testing vector functions
 ;; (count [1 2 3])
 ;; ;=>3
@@ -465,7 +462,7 @@
 ;; ;=>true
 ;; (list? [4 5 6])
 ;; ;=>false
-;; 
+;;
 ;; ;; Testing vector equality
 ;; (= [] (list))
 ;; ;=>true
@@ -487,13 +484,13 @@
 ;; ;=>false
 ;; (= "" [])
 ;; ;=>false
-;; 
+;;
 ;; ;; Testing vector parameter lists
 ;; ( (fn* [] 4) )
 ;; ;=>4
 ;; ( (fn* [f x] (f x)) (fn* [a] (+ 1 a)) 7)
 ;; ;=>8
-;; 
+;;
 ;; ;; Nested vector/list equality
 ;; (= [(list)] (list []))
 ;; ;=>true
