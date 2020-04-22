@@ -3,6 +3,14 @@
             [make-a-lisp-with-clojure.step4-if-fn-do :as s4]))
 
 (deftest step4-test
+  ;; TODO: print 'nil' instead of "" for nil
+  ;; (testing "nil"
+  ;;   (is (= "nil" (s4/read-eval-print "nil")))
+
+  (testing "booleans"
+    (is (= "true" (s4/read-eval-print "true")))
+    (is (= "false" (s4/read-eval-print "false"))))
+
   (testing "list functions"
     ;; list
     (is (= "()" (s4/read-eval-print "(list)")))
@@ -18,12 +26,6 @@
     (is (= "0" (s4/read-eval-print "(count (list))")))
     (is (= "0" (s4/read-eval-print "(count nil)")))))
 
-;; (if (> (count (list 1 2 3)) 3) 89 78)
-;; ;=>78
-;; (if (>= (count (list 1 2 3)) 3) 89 78)
-;; ;=>89
-;;
-;;
 ;; ;; Testing if form
 ;; (if true 7 8)
 ;; ;=>7
@@ -45,6 +47,11 @@
 ;; ;=>7
 ;; (= (list) nil)
 ;; ;=>false
+;;
+;; (if (> (count (list 1 2 3)) 3) 89 78)
+;; ;=>78
+;; (if (>= (count (list 1 2 3)) 3) 89 78)
+;; ;=>89
 ;;
 ;;
 ;; ;; Testing 1-way if form

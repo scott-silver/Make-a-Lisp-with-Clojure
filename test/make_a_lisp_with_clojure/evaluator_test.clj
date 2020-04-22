@@ -26,16 +26,26 @@
 
   (testing "evaluates nil"
     (is (= nil
-           (e/evaluate-ast-item [:nil] {})))))
+           (e/evaluate-ast-item [:nil] {}))))
+
+  (testing "evaluates bools"
+    (is (= true
+           (e/evaluate-ast-item [:true] {})))
+    (is (= false
+           (e/evaluate-ast-item [:false] {})))))
 
 (deftest evaluate-ast-test
   (testing "returns nil (and an unchanged env) for a nil ast"
     (is (= (e/evaluate-ast nil {})
            [nil {}])))
 
-  (testing "returns nil (and an unchanged env) for nil"
+  (testing "returns nil (and an unchanged env) for the nil atom"
     (is (= (e/evaluate-ast [:nil] {})
            [nil {}])))
+
+  (testing "returns boolean value (and an unchanged env) for bool atoms"
+    (is (= [true {}] (e/evaluate-ast [:true] {})))
+    (is (= [false {}] (e/evaluate-ast [:false] {}))))
 
   (testing "returns symbol values (and an unchanged env)"
     (is (= (e/evaluate-ast [:symbol "plus"] {"plus" +})

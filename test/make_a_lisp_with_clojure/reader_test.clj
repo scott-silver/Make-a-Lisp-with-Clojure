@@ -34,7 +34,13 @@
 
   (testing "captures nils"
     (is (= (r/tokenize-string "nil") '("nil")))
-    (is (= (r/tokenize-string "(nil)") '("(" "nil" ")")))))
+    (is (= (r/tokenize-string "(nil)") '("(" "nil" ")"))))
+
+  (testing "captures true"
+    (is (= (r/tokenize-string "true") '("true"))))
+
+  (testing "captures false"
+    (is (= (r/tokenize-string "false") '("false")))))
 
 (deftest consume-atom-test
   (testing "returns integer types"
@@ -58,8 +64,14 @@
   (testing "returns lets"
     (is (= (r/consume-atom "let") [:let])))
 
-  (testing "returns lets"
-    (is (= (r/consume-atom "nil") [:nil]))))
+  (testing "returns nils"
+    (is (= (r/consume-atom "nil") [:nil])))
+
+  (testing "returns true"
+    (is (= [:true] (r/consume-atom "true"))))
+
+  (testing "returns false"
+    (is (= [:false] (r/consume-atom "false")))))
 
 (deftest consume-list-test
   (testing "throws an error if the list of tokens is missing a close-paren"
@@ -116,7 +128,13 @@
 
   (testing "returns nils"
     (is (= [[:list [[:nil]]] '()]
-           (r/consume-list '("nil" ")"))))))
+           (r/consume-list '("nil" ")")))))
+
+  (testing "returns booleans"
+    (is (= [[:list [[:true]]] '()]
+           (r/consume-list '("true" ")"))))
+    (is (= [[:list [[:false]]] '()]
+           (r/consume-list '("false" ")"))))))
 
 (deftest consume-tokens-test
   (testing "throws an error it encounters a close-paren"
@@ -131,7 +149,9 @@
     (is (= (r/consume-tokens '("+")) [:symbol "+"]))
     (is (= (r/consume-tokens '("36")) [:integer 36]))
     (is (= (r/consume-tokens '("-584")) [:integer -584]))
-    (is (= (r/consume-tokens '("nil")) [:nil])))
+    (is (= (r/consume-tokens '("nil")) [:nil]))
+    (is (= (r/consume-tokens '("true")) [:true]))
+    (is (= (r/consume-tokens '("false")) [:false])))
 
   (testing "consumes lists"
     (is (= (r/consume-tokens '("(" ")")) [:list []]))
