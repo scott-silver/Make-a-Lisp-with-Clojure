@@ -22,11 +22,19 @@
 
   (testing "evaluates integers"
     (is (= (e/evaluate-ast-item [:integer 10] {}) 10))
-    (is (= (e/evaluate-ast-item [:integer -123] {}) -123))))
+    (is (= (e/evaluate-ast-item [:integer -123] {}) -123)))
+
+  (testing "evaluates nil"
+    (is (= nil
+           (e/evaluate-ast-item [:nil] {})))))
 
 (deftest evaluate-ast-test
   (testing "returns nil (and an unchanged env) for a nil ast"
     (is (= (e/evaluate-ast nil {})
+           [nil {}])))
+
+  (testing "returns nil (and an unchanged env) for nil"
+    (is (= (e/evaluate-ast [:nil] {})
            [nil {}])))
 
   (testing "returns symbol values (and an unchanged env)"

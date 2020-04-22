@@ -30,7 +30,11 @@
 
   (testing "captures lets"
     (is (= (r/tokenize-string "(let (c 6) c)")
-          '("(" "let" "(" "c" "6" ")" "c" ")")))))
+          '("(" "let" "(" "c" "6" ")" "c" ")"))))
+
+  (testing "captures nils"
+    (is (= (r/tokenize-string "nil") '("nil")))
+    (is (= (r/tokenize-string "(nil)") '("(" "nil" ")")))))
 
 (deftest consume-atom-test
   (testing "returns integer types"
@@ -52,7 +56,10 @@
     (is (= (r/consume-atom "def") [:def])))
 
   (testing "returns lets"
-    (is (= (r/consume-atom "let") [:let]))))
+    (is (= (r/consume-atom "let") [:let])))
+
+  (testing "returns lets"
+    (is (= (r/consume-atom "nil") [:nil]))))
 
 (deftest consume-list-test
   (testing "throws an error if the list of tokens is missing a close-paren"
@@ -105,7 +112,11 @@
                     [:list [[:symbol "a"]
                             [:integer 1]]]
                     [:symbol "a"]]]
-            '()]))))
+            '()])))
+
+  (testing "returns nils"
+    (is (= [[:list [[:nil]]] '()]
+           (r/consume-list '("nil" ")"))))))
 
 (deftest consume-tokens-test
   (testing "throws an error it encounters a close-paren"
@@ -119,7 +130,8 @@
     (is (= (r/consume-tokens '("ab")) [:symbol "ab"]))
     (is (= (r/consume-tokens '("+")) [:symbol "+"]))
     (is (= (r/consume-tokens '("36")) [:integer 36]))
-    (is (= (r/consume-tokens '("-584")) [:integer -584])))
+    (is (= (r/consume-tokens '("-584")) [:integer -584]))
+    (is (= (r/consume-tokens '("nil")) [:nil])))
 
   (testing "consumes lists"
     (is (= (r/consume-tokens '("(" ")")) [:list []]))

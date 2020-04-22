@@ -4,12 +4,13 @@
 (defn lookup-symbol [[_ symbol-value] env]
   (if-let [value (env symbol-value)]
     value
-    (throw (Exception. (str "'" symbol-value "' not found")))))
+    (throw (Exception. (str "Symbol '" symbol-value "' not found")))))
 
 (declare evaluate-ast)
 
 (defn evaluate-ast-item [ast env]
   (case (first ast)
+    :nil nil
     :symbol (lookup-symbol ast env)
     :integer (second ast)
     :list (map #(first (evaluate-ast % env)) (second ast))

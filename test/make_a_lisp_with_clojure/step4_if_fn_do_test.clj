@@ -15,11 +15,9 @@
     (is (= "(1 2 3)" (s4/read-eval-print "(list 1 2 3)")))
     ;; count
     (is (= "3" (s4/read-eval-print "(count (list 1 2 3))")))
-    (is (= "0" (s4/read-eval-print "(count (list))")))))
-    ;; (is (= "0" (s4/read-eval-print "(count nil)")))))
+    (is (= "0" (s4/read-eval-print "(count (list))")))
+    (is (= "0" (s4/read-eval-print "(count nil)")))))
 
-;; (count nil)
-;; ;=>0
 ;; (if (> (count (list 1 2 3)) 3) 89 78)
 ;; ;=>78
 ;; (if (>= (count (list 1 2 3)) 3) 89 78)
