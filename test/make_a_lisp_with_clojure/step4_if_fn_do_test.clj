@@ -3,9 +3,8 @@
             [make-a-lisp-with-clojure.step4-if-fn-do :as s4]))
 
 (deftest step4-test
-  ;; TODO: print 'nil' instead of "" for nil
-  ;; (testing "nil"
-  ;;   (is (= "nil" (s4/read-eval-print "nil")))
+  (testing "nil"
+    (is (= "nil" (s4/read-eval-print "nil"))))
 
   (testing "booleans"
     (is (= "true" (s4/read-eval-print "true")))
@@ -35,19 +34,14 @@
     (is (= "8" (s4/read-eval-print "(if nil 7 8)")))
     (is (= "7" (s4/read-eval-print "(if 0 7 8)")))
     (is (= "7" (s4/read-eval-print "(if (list) 7 8)")))
-    (is (= "7" (s4/read-eval-print "(if (list 1 2 3) 7 8)")))))
+    (is (= "7" (s4/read-eval-print "(if (list 1 2 3) 7 8)"))))
 
-;; ;; Testing 1-way if form
-;; (if false (+ 1 7))
-;; ;=>nil
-;; (if nil 8)
-;; ;=>nil
-;; (if nil 8 7)
-;; ;=>7
-;; (if true (+ 1 7))
-;; ;=>8
-;; 
-;; 
+  (testing "1-way if form"
+    (is (= "nil" (s4/read-eval-print "(if false (+ 1 7))")))
+    (is (= "nil" (s4/read-eval-print "(if nil 8)")))
+    (is (= "7" (s4/read-eval-print "(if nil 8 7)")))
+    (is (= "8" (s4/read-eval-print "(if true (+ 1 7))")))))
+
 ;; ;; Testing basic conditionals
 ;; (= 2 1)
 ;; ;=>false

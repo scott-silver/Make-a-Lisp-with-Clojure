@@ -24,8 +24,10 @@
       (swap! repl-environment (constantly new-env))
       result)))
 
-(defn PRINT [ast]
-  (str ast))
+(defn PRINT [expression]
+  (cond
+    (nil? expression) "nil"
+    :else (str expression)))
 
 (defn read-eval-print [a]
   (-> a

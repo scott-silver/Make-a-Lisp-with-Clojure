@@ -159,5 +159,10 @@
     (is (= [0 {}]
           (e/evaluate-ast
             [:list [[:if] [:false] [:integer 1] [:integer 0]]]
-            {})))))
+            {}))))
 
+  (testing "evalutes one-way 'if' statements"
+    (is (= [nil {}]
+          (e/evaluate-ast
+            [:list [[:if] [:false] [:list [[:symbol "plus"] [:integer 1] [:integer 7]]]]]
+            {})))))

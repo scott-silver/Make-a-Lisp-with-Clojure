@@ -57,10 +57,10 @@
       (and
        (= :list item-type)
        (= first-list-item [:if]))
-      (let [condition (nth list-contents 1)
+      (let [condition (get list-contents 1)
             evaluated-condition (first (evaluate-ast condition env))
-            consequent (nth list-contents 2)
-            alternative (nth list-contents 3)]
+            consequent (get list-contents 2)
+            alternative (get list-contents 3)]
         (if evaluated-condition
             (evaluate-ast consequent env)
             (evaluate-ast alternative env)))
