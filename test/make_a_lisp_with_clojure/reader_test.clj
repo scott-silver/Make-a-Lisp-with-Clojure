@@ -40,7 +40,10 @@
     (is (= (r/tokenize-string "true") '("true"))))
 
   (testing "captures false"
-    (is (= (r/tokenize-string "false") '("false")))))
+    (is (= (r/tokenize-string "false") '("false"))))
+
+  (testing "captures if"
+    (is (= (r/tokenize-string "if") '("if")))))
 
 (deftest consume-atom-test
   (testing "returns integer types"
@@ -71,7 +74,10 @@
     (is (= [:true] (r/consume-atom "true"))))
 
   (testing "returns false"
-    (is (= [:false] (r/consume-atom "false")))))
+    (is (= [:false] (r/consume-atom "false"))))
+
+  (testing "returns if"
+    (is (= [:if] (r/consume-atom "if")))))
 
 (deftest consume-list-test
   (testing "throws an error if the list of tokens is missing a close-paren"
@@ -134,7 +140,11 @@
     (is (= [[:list [[:true]]] '()]
            (r/consume-list '("true" ")"))))
     (is (= [[:list [[:false]]] '()]
-           (r/consume-list '("false" ")"))))))
+           (r/consume-list '("false" ")")))))
+
+  (testing "returns if statements"
+    (is (= [[:list [[:if] [:true] [:symbol "a"] [:symbol "b"]]] '()]
+           (r/consume-list '("if" "true" "a" "b" ")"))))))
 
 (deftest consume-tokens-test
   (testing "throws an error it encounters a close-paren"
@@ -184,4 +194,8 @@
            [:list [[:let]
                    [:list [[:symbol "a"]
                            [:integer 1]]]
-                   [:symbol "a"]]]))))
+                   [:symbol "a"]]])))
+
+  (testing "consumes if statements"
+    (is (= (r/consume-tokens '("(" "if" "true" "a" "b" ")"))
+           [:list [[:if] [:true] [:symbol "a"] [:symbol "b"]]]))))

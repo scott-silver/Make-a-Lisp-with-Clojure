@@ -149,4 +149,15 @@
                             [:symbol "a"]
                             [:symbol "b"]
                             [:symbol "c"]]]]]
-            {"plus" +})))))
+            {"plus" +}))))
+
+  (testing "evalutes 'if' statements"
+    (is (= [1 {}]
+           (e/evaluate-ast
+              [:list [[:if] [:true] [:integer 1] [:integer 0]]]
+              {})))
+    (is (= [0 {}]
+          (e/evaluate-ast
+            [:list [[:if] [:false] [:integer 1] [:integer 0]]]
+            {})))))
+

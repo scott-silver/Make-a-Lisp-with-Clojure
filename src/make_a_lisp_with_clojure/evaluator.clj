@@ -29,6 +29,7 @@
       (not= :list item-type)
       [(evaluate-ast-item ast env) env]
 
+      ;; list types
       :let [list-contents (second ast)
             first-list-item (first list-contents)]
 
@@ -51,6 +52,18 @@
             let-env (reduce accumulate-env env redef-key-value-pairs)
             value (first (evaluate-ast (nth list-contents 2) let-env))]
         [value env])
+
+      ;; if
+      (and
+       (= :list item-type)
+       (= first-list-item [:if]))
+      (let [condition (nth list-contents 1)
+            evaluated-condition (first (evaluate-ast condition env))
+            consequent (nth list-contents 2)
+            alternative (nth list-contents 3)]
+        (if evaluated-condition
+            (evaluate-ast consequent env)
+            (evaluate-ast alternative env)))
 
       (and
        (= :list item-type)

@@ -24,36 +24,19 @@
     ;; count
     (is (= "3" (s4/read-eval-print "(count (list 1 2 3))")))
     (is (= "0" (s4/read-eval-print "(count (list))")))
-    (is (= "0" (s4/read-eval-print "(count nil)")))))
+    (is (= "0" (s4/read-eval-print "(count nil)"))))
 
-;; ;; Testing if form
-;; (if true 7 8)
-;; ;=>7
-;; (if false 7 8)
-;; ;=>8
-;; (if false 7 false)
-;; ;=>false
-;; (if true (+ 1 7) (+ 1 8))
-;; ;=>8
-;; (if false (+ 1 7) (+ 1 8))
-;; ;=>9
-;; (if nil 7 8)
-;; ;=>8
-;; (if 0 7 8)
-;; ;=>7
-;; (if (list) 7 8)
-;; ;=>7
-;; (if (list 1 2 3) 7 8)
-;; ;=>7
-;; (= (list) nil)
-;; ;=>false
-;;
-;; (if (> (count (list 1 2 3)) 3) 89 78)
-;; ;=>78
-;; (if (>= (count (list 1 2 3)) 3) 89 78)
-;; ;=>89
-;;
-;;
+  (testing "if form"
+    (is (= "7" (s4/read-eval-print "(if true 7 8)")))
+    (is (= "8" (s4/read-eval-print "(if false 7 8)")))
+    (is (= "false" (s4/read-eval-print "(if false 7 false)")))
+    (is (= "8" (s4/read-eval-print "(if true (+ 1 7) (+ 1 8))")))
+    (is (= "9" (s4/read-eval-print "(if false (+ 1 7) (+ 1 8))")))
+    (is (= "8" (s4/read-eval-print "(if nil 7 8)")))
+    (is (= "7" (s4/read-eval-print "(if 0 7 8)")))
+    (is (= "7" (s4/read-eval-print "(if (list) 7 8)")))
+    (is (= "7" (s4/read-eval-print "(if (list 1 2 3) 7 8)")))))
+
 ;; ;; Testing 1-way if form
 ;; (if false (+ 1 7))
 ;; ;=>nil
