@@ -72,39 +72,24 @@
     (is (= "true" (s4/read-eval-print "(<= 1 1)")))
     (is (= "true" (s4/read-eval-print "(<= 1 2)"))))
 
+  (testing "equals"
+    (is (= "true" (s4/read-eval-print "(= 1 1)")))
+    (is (= "true" (s4/read-eval-print "(= 0 0)")))
+    (is (= "false" (s4/read-eval-print "(= 1 0)")))
+    (is (= "true" (s4/read-eval-print "(= true true)")))
+    (is (= "true" (s4/read-eval-print "(= false false)")))
+    (is (= "true" (s4/read-eval-print "(= nil nil)")))
+    (is (= "true" (s4/read-eval-print "(= (list) (list))")))
+    (is (= "true" (s4/read-eval-print "(= (list 1 2) (list 1 2))")))
+    (is (= "false" (s4/read-eval-print "(= (list 1) (list))")))
+    (is (= "false" (s4/read-eval-print "(= (list) (list 1))")))
+    (is (= "false" (s4/read-eval-print "(= 0 (list))")))
+    (is (= "false" (s4/read-eval-print "(= (list) 0)")))
+    (is (= "false" (s4/read-eval-print "(= (list nil) (list))"))))
+
   (testing "combinations"
     (is (= "78" (s4/read-eval-print "(if (> (count (list 1 2 3)) 3) 89 78)")))
     (is (= "89" (s4/read-eval-print "(if (>= (count (list 1 2 3)) 3) 89 78)")))))
-
-;; ;; Testing equality
-;; (= 1 1)
-;; ;=>true
-;; (= 0 0)
-;; ;=>true
-;; (= 1 0)
-;; ;=>false
-;; (= true true)
-;; ;=>true
-;; (= false false)
-;; ;=>true
-;; (= nil nil)
-;; ;=>true
-;;
-;; (= (list) (list))
-;; ;=>true
-;; (= (list 1 2) (list 1 2))
-;; ;=>true
-;; (= (list 1) (list))
-;; ;=>false
-;; (= (list) (list 1))
-;; ;=>false
-;; (= 0 (list))
-;; ;=>false
-;; (= (list) 0)
-;; ;=>false
-;; (= (list nil) (list))
-;; ;=>false
-;;
 
 ;; ;; Testing builtin and user defined functions
 ;; (+ 1 2)
