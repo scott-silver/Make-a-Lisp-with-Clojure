@@ -49,15 +49,18 @@
     (is (= "false" (s4/read-eval-print "(= 1 (+ 1 1))")))
     (is (= "true" (s4/read-eval-print "(= 2 (+ 1 1))")))
     (is (= "false" (s4/read-eval-print "(= nil 1)")))
-    (is (= "true" (s4/read-eval-print "(= nil nil)")))))
+    (is (= "true" (s4/read-eval-print "(= nil nil)")))
+    (is (= "false" (s4/read-eval-print "(= (list) nil)"))))
 
-;; (> 2 1)
-;; ;=>true
-;; (> 1 1)
-;; ;=>false
-;; (> 1 2)
-;; ;=>false
-;;
+  (testing "greater than"
+    (is (= "true" (s4/read-eval-print "(> 2 1)")))
+    (is (= "false" (s4/read-eval-print "(> 1 1)")))
+    (is (= "false" (s4/read-eval-print "(> 1 2)"))))
+
+  (testing "combinations"
+    (is (= "78" (s4/read-eval-print "(if (> (count (list 1 2 3)) 3) 89 78)")))))
+    ;; (is (= "89" (s4/read-eval-print "(if (>= (count (list 1 2 3)) 3) 89 78)")))))
+
 ;; (>= 2 1)
 ;; ;=>true
 ;; (>= 1 1)
@@ -78,8 +81,6 @@
 ;; ;=>true
 ;; (<= 1 2)
 ;; ;=>true
-;;
-;;
 ;;
 ;; ;; Testing equality
 ;; (= 1 1)
@@ -109,8 +110,8 @@
 ;; ;=>false
 ;; (= (list nil) (list))
 ;; ;=>false
-;; 
-;; 
+;;
+
 ;; ;; Testing builtin and user defined functions
 ;; (+ 1 2)
 ;; ;=>3
