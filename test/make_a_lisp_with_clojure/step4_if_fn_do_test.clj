@@ -89,11 +89,12 @@
 
   (testing "combinations"
     (is (= "78" (s4/read-eval-print "(if (> (count (list 1 2 3)) 3) 89 78)")))
-    (is (= "89" (s4/read-eval-print "(if (>= (count (list 1 2 3)) 3) 89 78)")))))
+    (is (= "89" (s4/read-eval-print "(if (>= (count (list 1 2 3)) 3) 89 78)"))))
+
+  (testing "builtin functions"
+    (is (= "3" (s4/read-eval-print "(+ 1 2)")))))
 
 ;; ;; Testing builtin and user defined functions
-;; (+ 1 2)
-;; ;=>3
 ;; ( (fn* (a b) (+ b a)) 3 4)
 ;; ;=>7
 ;; ( (fn* () 4) )
