@@ -67,17 +67,15 @@
     (is (= "false" (s4/read-eval-print "(< 1 1)")))
     (is (= "true" (s4/read-eval-print "(< 1 2)"))))
 
+  (testing "less than or equal to"
+    (is (= "false" (s4/read-eval-print "(<= 2 1)")))
+    (is (= "true" (s4/read-eval-print "(<= 1 1)")))
+    (is (= "true" (s4/read-eval-print "(<= 1 2)"))))
+
   (testing "combinations"
     (is (= "78" (s4/read-eval-print "(if (> (count (list 1 2 3)) 3) 89 78)")))
     (is (= "89" (s4/read-eval-print "(if (>= (count (list 1 2 3)) 3) 89 78)")))))
 
-;; (<= 2 1)
-;; ;=>false
-;; (<= 1 1)
-;; ;=>true
-;; (<= 1 2)
-;; ;=>true
-;;
 ;; ;; Testing equality
 ;; (= 1 1)
 ;; ;=>true
