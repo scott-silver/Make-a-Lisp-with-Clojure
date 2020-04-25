@@ -17,6 +17,10 @@
         list-contents-strings (map print-ast-item list-contents)]
     (str "(" (str/join " " list-contents-strings) ")")))
 
+(defmethod print-ast-item :nil
+  [_]
+  "nil")
+
 (defn print-ast
   [ast]
   (cond

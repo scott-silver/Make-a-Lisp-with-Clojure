@@ -8,6 +8,7 @@
    "-"      -
    "/"      /
    "*"      *
+   "="      =
    "list"   list
    "list?"  list?
    "empty?" empty?
