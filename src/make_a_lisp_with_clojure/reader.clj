@@ -45,6 +45,8 @@
 
    (= "if" atom) [:if]
 
+   (= "fn" atom) [:fn]
+
    :let [int-string (re-matches integer-regex atom)]
    (not-nil? int-string)
    [:integer (read-string int-string)]

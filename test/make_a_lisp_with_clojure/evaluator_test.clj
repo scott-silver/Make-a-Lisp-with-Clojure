@@ -165,4 +165,14 @@
     (is (= [nil {}]
           (e/evaluate-ast
             [:list [[:if] [:false] [:list [[:symbol "plus"] [:integer 1] [:integer 7]]]]]
-            {})))))
+            {}))))
+
+  (testing "evalutes function definitions"
+    (is (= [5 {"plus" +}]
+           (e/evaluate-ast
+            [:list [[:list [[:fn]
+                            [:list [[:symbol "a"] [:symbol "b"]]]
+                            [:list [[:symbol "plus"] [:symbol "a"] [:symbol "b"]]]]]
+                    [:integer 2]
+                    [:integer 3]]]
+            {"plus" +})))))

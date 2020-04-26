@@ -65,9 +65,26 @@
             (evaluate-ast consequent env)
             (evaluate-ast alternative env)))
 
+      ;; fn - function definition
+      ;; ([fn] [parameter list] [function body])
+      ;; e.g. (fn (a b) (+ a b))
       (and
        (= :list item-type)
-       (not= first-list-item [:def]))
+       (= first-list-item [:fn]))
+      (let [parameter-list (get list-contents 1) ;; [:list [[:symbol "a"] [:symbol "b"]]]
+            parameter-list-items (second parameter-list) ;; [[:symbol "a"] [:symbol "b"]]
+            parameter-names (map second parameter-list-items) ;; ["a" "b"]
+            fn-body (get list-contents 2)]
+        [(fn [& fn-args]
+          (let [param-argument-bindings (interleave parameter-names fn-args) ;; ["a" 1 "b" 2]
+                fn-env (apply assoc env param-argument-bindings)
+                [return-value return-env] (evaluate-ast fn-body fn-env)]
+            return-value))
+         env])
+
+      ;; function call
+      ;; ([fn] [arg] [arg] [arg])
+      :else
       (let [[func & args] (evaluate-ast-item ast env)]
         [(apply func args) env]))))
 
