@@ -95,14 +95,9 @@
     (is (= "3" (s4/read-eval-print "(+ 1 2)"))))
 
   (testing "user-defined functions"
-    (is (= "7" (s4/read-eval-print "((fn (a b) (+ b a)) 3 4)")))))
+    (is (= "7" (s4/read-eval-print "((fn (a b) (+ b a)) 3 4)")))
+    (is (= "4" (s4/read-eval-print "( (fn () 4) )")))))
 
-;; ;; Testing builtin and user defined functions
-;; ( (fn* (a b) (+ b a)) 3 4)
-;; ;=>7
-;; ( (fn* () 4) )
-;; ;=>4
-;;
 ;; ( (fn* (f x) (f x)) (fn* (a) (+ 1 a)) 7)
 ;; ;=>8
 ;;

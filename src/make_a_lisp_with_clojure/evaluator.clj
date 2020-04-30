@@ -23,70 +23,72 @@
 (defn evaluate-ast [ast env]
   (let [item-type (first ast)]
     (cond-let
-      (nil? ast)
-      [nil env]
+     (nil? ast)
+     [nil env]
 
-      (not= :list item-type)
-      [(evaluate-ast-item ast env) env]
+     (not= :list item-type)
+     [(evaluate-ast-item ast env) env]
 
       ;; list types
-      :let [list-contents (second ast)
-            first-list-item (first list-contents)]
+     :let [list-contents (second ast)
+           first-list-item (first list-contents)]
 
       ;; def
-      (and
-       (= :list item-type)
-       (= first-list-item [:def]))
-      (let [symbol-item (second list-contents)
-            symbol-name (second symbol-item)
-            value (first (evaluate-ast (nth list-contents 2) env))]
-        [value (assoc env symbol-name value)])
+     (and
+      (= :list item-type)
+      (= first-list-item [:def]))
+     (let [symbol-item (second list-contents)
+           symbol-name (second symbol-item)
+           value (first (evaluate-ast (nth list-contents 2) env))]
+       [value (assoc env symbol-name value)])
 
       ;; let
-      (and
-       (= :list item-type)
-       (= first-list-item [:let]))
-      (let [redef-list (second list-contents) ;; [[:let] [:list [a b c d]] => [:list [a b c d]]
-            redef-list-items (second redef-list) ;; [:list [a b c d]] => [a b c d]
-            redef-key-value-pairs (partition 2 redef-list-items) ;; [a b c d] => [[a b] [c d]]
-            let-env (reduce accumulate-env env redef-key-value-pairs)
-            value (first (evaluate-ast (nth list-contents 2) let-env))]
-        [value env])
+     (and
+      (= :list item-type)
+      (= first-list-item [:let]))
+     (let [redef-list (second list-contents) ;; [[:let] [:list [a b c d]] => [:list [a b c d]]
+           redef-list-items (second redef-list) ;; [:list [a b c d]] => [a b c d]
+           redef-key-value-pairs (partition 2 redef-list-items) ;; [a b c d] => [[a b] [c d]]
+           let-env (reduce accumulate-env env redef-key-value-pairs)
+           value (first (evaluate-ast (nth list-contents 2) let-env))]
+       [value env])
 
       ;; if
-      (and
-       (= :list item-type)
-       (= first-list-item [:if]))
-      (let [condition (get list-contents 1)
-            evaluated-condition (first (evaluate-ast condition env))
-            consequent (get list-contents 2)
-            alternative (get list-contents 3)]
-        (if evaluated-condition
-            (evaluate-ast consequent env)
-            (evaluate-ast alternative env)))
+     (and
+      (= :list item-type)
+      (= first-list-item [:if]))
+     (let [condition (get list-contents 1)
+           evaluated-condition (first (evaluate-ast condition env))
+           consequent (get list-contents 2)
+           alternative (get list-contents 3)]
+       (if evaluated-condition
+         (evaluate-ast consequent env)
+         (evaluate-ast alternative env)))
 
       ;; fn - function definition
       ;; ([fn] [parameter list] [function body])
       ;; e.g. (fn (a b) (+ a b))
-      (and
-       (= :list item-type)
-       (= first-list-item [:fn]))
-      (let [parameter-list (get list-contents 1) ;; [:list [[:symbol "a"] [:symbol "b"]]]
-            parameter-list-items (second parameter-list) ;; [[:symbol "a"] [:symbol "b"]]
-            parameter-names (map second parameter-list-items) ;; ["a" "b"]
-            fn-body (get list-contents 2)]
-        [(fn [& fn-args]
+     (and
+      (= :list item-type)
+      (= first-list-item [:fn]))
+     (let [parameter-list (get list-contents 1) ;; [:list [[:symbol "a"] [:symbol "b"]]]
+           parameter-list-items (second parameter-list) ;; [[:symbol "a"] [:symbol "b"]]
+           parameter-names (map second parameter-list-items) ;; ["a" "b"]
+           fn-body (get list-contents 2)]
+       [(fn [& fn-args]
           (let [param-argument-bindings (interleave parameter-names fn-args) ;; ["a" 1 "b" 2]
-                fn-env (apply assoc env param-argument-bindings)
+                fn-env (if (empty? param-argument-bindings)
+                         env
+                         (apply assoc env param-argument-bindings))
                 [return-value return-env] (evaluate-ast fn-body fn-env)]
             return-value))
-         env])
+        env])
 
       ;; function call
       ;; ([fn] [arg] [arg] [arg])
-      :else
-      (let [[func & args] (evaluate-ast-item ast env)]
-        [(apply func args) env]))))
+     :else
+     (let [[func & args] (evaluate-ast-item ast env)]
+       [(apply func args) env]))))
 
 (defn accumulate-env
   "for use with `reduce`: (reduce accumulate-env env key-expression-pairs)

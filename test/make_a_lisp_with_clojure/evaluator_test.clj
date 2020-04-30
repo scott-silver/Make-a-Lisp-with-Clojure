@@ -175,4 +175,11 @@
                             [:list [[:symbol "plus"] [:symbol "a"] [:symbol "b"]]]]]
                     [:integer 2]
                     [:integer 3]]]
-            {"plus" +})))))
+            {"plus" +})))
+
+    (is (= [4 {}]
+           (e/evaluate-ast
+             [:list [[:list [[:fn]
+                             [:list []]
+                             [:integer 4]]]]]
+             {})))))
