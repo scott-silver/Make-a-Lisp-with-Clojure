@@ -102,11 +102,14 @@
   (testing "closures"
     (is (= "12" (s4/read-eval-print "(((fn (a) (fn (b) (+ a b))) 5) 7)")))))
 
-;; (def! gen-plus5 (fn* () (fn* (b) (+ 5 b))))
-;; (def! plus5 (gen-plus5))
-;; (plus5 7)
-;; ;=>12
-;;
+(deftest def-fn-test
+  ;; atoms are reset between test functions, but not between different "testing"
+  ;; blocks
+  (testing "def stores a function definition"
+    (s4/read-eval-print "(def gen-plus5 (fn () (fn (b) (+ 5 b))))")
+    (s4/read-eval-print "(def plus5 (gen-plus5))")
+    (is (= (s4/read-eval-print "(plus5 7)") "12"))))
+
 ;; (def! gen-plusX (fn* (x) (fn* (b) (+ x b))))
 ;; (def! plus7 (gen-plusX 7))
 ;; (plus7 8)
