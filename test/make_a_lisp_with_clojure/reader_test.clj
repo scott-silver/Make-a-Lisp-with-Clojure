@@ -43,7 +43,10 @@
     (is (= (r/tokenize-string "false") '("false"))))
 
   (testing "captures if"
-    (is (= (r/tokenize-string "if") '("if")))))
+    (is (= (r/tokenize-string "if") '("if"))))
+
+  (testing "captures fn"
+    (is (= (r/tokenize-string "fn") '("fn")))))
 
 (deftest consume-atom-test
   (testing "returns integer types"
